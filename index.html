@@ -82,7 +82,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s;
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
     }
     .envelope-overlay.opened {
       opacity: 0;
@@ -127,7 +127,7 @@
 
     .letter-envelope::before {
       transform-origin: top center;
-      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
     }
     .letter-envelope.opening::before { transform: rotateX(180deg); opacity: 0.3; }
     .letter-envelope.opening .wax-seal { animation: none; transform: scale(0) rotate(90deg); opacity: 0; transition: all 0.5s ease; }
@@ -698,6 +698,266 @@
       0% { transform: scale(1) translate(0, 0); opacity: 1; }
       100% { transform: scale(0) translate(var(--tx), var(--ty)); opacity: 0; }
     }
+    /* ─── LOGIN GATE ─── */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: radial-gradient(circle at 50% 30%, rgba(61, 5, 90, 0.96) 0%, rgba(10, 0, 18, 0.98) 70%);
+      transition: opacity 0.5s ease, visibility 0.5s, transform 0.5s ease;
+    }
+    .login-overlay.gone { opacity: 0; visibility: hidden; pointer-events: none; transform: scale(1.08); }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 0 2rem 2.2rem;
+      text-align: center;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 36px 36px 120px 120px / 36px 36px 90px 90px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 70px rgba(255, 42, 109, 0.22);
+      position: relative;
+      animation: cardRise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes cardRise { from { opacity: 0; transform: translateY(40px) scale(0.94); } to { opacity: 1; transform: none; } }
+    .login-card.shake { animation: shake 0.5s; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-12px); } 40% { transform: translateX(10px); }
+      60% { transform: translateX(-8px); } 80% { transform: translateX(6px); }
+    }
+
+    .lock-wrap { position: relative; width: 120px; height: 120px; margin: -50px auto 0.4rem; }
+    .lock-svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 22px rgba(255,42,109,0.8)); }
+    .lock-svg .shackle {
+      fill: none; stroke: var(--gold); stroke-width: 7; stroke-linecap: round;
+      transform-origin: 62px 40px;
+      transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .lock-svg .lock-heart { animation: heartbeat 1.35s ease-in-out infinite; transform-origin: 50px 62px; }
+    .login-card.unlocked .shackle { transform: translateY(-14px) rotate(28deg); }
+
+    .login-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.6rem;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 10%, #ffd6e0 55%, #ff758c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .login-sub {
+      font-size: 0.78rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #ffb3c6;
+      margin: 0.3rem 0 1.6rem;
+    }
+
+    .field { position: relative; margin-bottom: 1.2rem; text-align: left; }
+    .field input {
+      width: 100%;
+      padding: 1.25rem 1.2rem 0.5rem;
+      font: 500 1rem 'Outfit', sans-serif;
+      color: #fff;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 99px;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    }
+    .field input:focus {
+      border-color: var(--primary);
+      background: rgba(255, 42, 109, 0.1);
+      box-shadow: 0 0 0 4px rgba(255, 42, 109, 0.18), 0 0 25px rgba(255,42,109,0.3);
+    }
+    .field label {
+      position: absolute;
+      left: 1.3rem; top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.5rem;
+      color: #ffb3c6;
+      pointer-events: none;
+      transition: all 0.22s ease;
+    }
+    .field input:focus + label,
+    .field input:not(:placeholder-shown) + label {
+      top: 0.7rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .login-btn {
+      width: 100%;
+      margin-top: 0.4rem;
+      padding: 1rem;
+      font: 600 1.1rem 'Outfit', sans-serif;
+      color: #fff;
+      border: none;
+      border-radius: 99px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff2a6d, #ff758c);
+      box-shadow: 0 10px 30px rgba(255, 42, 109, 0.5);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+    }
+    .login-btn:hover { transform: scale(1.04); box-shadow: 0 15px 40px rgba(255, 42, 109, 0.8); }
+    /* Hint */
+    .hint-row { display: flex; justify-content: flex-end; margin: -0.5rem 0.6rem 0.9rem; }
+    .hint-toggle {
+      background: none; border: none; cursor: pointer;
+      font: 500 0.82rem 'Outfit', sans-serif;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      transition: color 0.2s, transform 0.2s;
+    }
+    .hint-toggle:hover { color: #fff; transform: translateY(-1px); }
+
+    .hint-panel {
+      display: none;
+      margin-bottom: 1.1rem;
+      padding: 1.1rem 1rem 1rem;
+      text-align: center;
+      background: rgba(18, 0, 32, 0.6);
+      border: 1px dashed rgba(255, 209, 102, 0.5);
+      border-radius: 22px;
+      animation: popIn 0.35s ease both;
+    }
+    .hint-panel.open { display: block; }
+    .hint-q { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1rem; color: #ffe6ed; margin-bottom: 0.9rem; }
+    .hint-choices { display: flex; gap: 0.7rem; justify-content: center; }
+    .hint-choice {
+      flex: 1;
+      padding: 0.7rem 0.5rem;
+      font: 600 0.95rem 'Outfit', sans-serif;
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 99px;
+      cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s, border-color 0.2s;
+    }
+    .hint-choice:hover { transform: scale(1.06); background: rgba(255, 42, 109, 0.22); border-color: var(--primary); }
+
+    .hint-result { margin-top: 0.9rem; }
+    .hint-result:empty { display: none; }
+    .cred-box {
+      padding: 0.8rem 1rem;
+      background: rgba(255, 209, 102, 0.08);
+      border: 1px solid rgba(255, 209, 102, 0.4);
+      border-radius: 16px;
+      font-size: 0.92rem;
+      line-height: 1.8;
+      color: #ffe6ed;
+      animation: popIn 0.35s ease both;
+    }
+    .cred-box b { color: var(--gold); font-weight: 600; }
+    .cred-fill {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1.3rem;
+      font: 600 0.85rem 'Outfit', sans-serif;
+      color: #fff;
+      background: linear-gradient(135deg, #ff2a6d, #ff758c);
+      border: none; border-radius: 99px; cursor: pointer;
+    }
+    .love-msg {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2rem;
+      line-height: 1.2;
+      color: #fff;
+      filter: drop-shadow(0 0 14px rgba(255,42,109,0.7));
+      animation: popIn 0.4s ease both;
+    }
+    .love-msg small { display: block; margin-top: 0.4rem; font: 300 0.82rem 'Outfit', sans-serif; color: #ffb3c6; filter: none; }
+
+    /* ─── TRICKY INTERNAL PAGE ─── */
+    .gated { display: none; }
+    .gated.show { display: block; animation: popIn 0.6s ease both; }
+
+    .locked-teaser {
+      text-align: center;
+      padding: 1.1rem;
+      border: 1px dashed rgba(255, 209, 102, 0.45);
+      border-radius: 20px;
+      color: #ffd166;
+      letter-spacing: 0.05em;
+      background: rgba(255,255,255,0.04);
+      animation: floatPrompt 2s ease-in-out infinite alternate;
+    }
+    .btn-yes, .btn-no { will-change: transform; }
+    .choice-buttons { flex-wrap: wrap; }
+
+    .secret-count { text-align: center; color: #ffb3c6; font-size: 0.9rem; letter-spacing: 0.08em; margin: 0.4rem 0 0.2rem; }
+    .reason-card { user-select: none; }
+    .reason-card.revealed { border-color: var(--gold); background: rgba(255, 209, 102, 0.08); }
+    .reason-card.revealed .reason-head::after { content: ' 🔓'; }
+    .reason-card:not(.revealed) .reason-head::after { content: ' 🔒'; }
+    .reason-desc.swap { animation: popIn 0.4s ease both; font-family: 'Playfair Display', serif; font-style: italic; color: #fff3d6; }
+
+    .vault-card {
+      text-align: center;
+      padding: 2rem 1.6rem 1.8rem;
+      border-radius: 28px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.4), 0 0 40px rgba(255, 209, 102, 0.12);
+    }
+    .vault-title { font-family: 'Great Vibes', cursive; font-size: 2.6rem; color: var(--gold); filter: drop-shadow(0 0 14px rgba(255,209,102,0.4)); }
+    .vault-sub { color: #ffb3c6; font-size: 0.95rem; margin-bottom: 1.2rem; font-weight: 300; }
+    .scratch-box {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      height: 170px;
+      margin: 0 auto;
+      border-radius: 20px;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 40%, #5a0a3a, #1c0033);
+      border: 1px solid rgba(255, 209, 102, 0.4);
+    }
+    .scratch-msg {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 1rem;
+      font-family: 'Great Vibes', cursive;
+      font-size: 2rem; line-height: 1.25; color: #fff;
+    }
+    .scratch-msg small { font: 300 0.85rem 'Outfit', sans-serif; color: #ffd6e0; margin-top: 0.4rem; }
+    #scratchCanvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; transition: opacity 0.6s ease; }
+    #scratchCanvas.done { opacity: 0; pointer-events: none; }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 2rem; transform: translateX(-50%);
+      z-index: 3000; max-width: 90vw; padding: 0.9rem 1.5rem;
+      border-radius: 99px; color: #fff; text-align: center;
+      background: rgba(255, 42, 109, 0.9);
+      box-shadow: 0 10px 30px rgba(255,42,109,0.5);
+      animation: toastIn 0.4s ease both;
+    }
+    @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+    .rain-heart { position: fixed; top: -40px; z-index: 2500; pointer-events: none; animation: rainFall linear forwards; }
+    @keyframes rainFall { to { transform: translateY(110vh) rotate(40deg); opacity: 0.6; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+
+    .login-error {
+      min-height: 1.4rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #ff9db5;
+    }
   </style>
 </head>
 <body>
@@ -707,6 +967,48 @@
 
   <!-- Background canvas for petals and stars -->
   <canvas id="bgCanvas"></canvas>
+
+  <!-- ─── LOGIN GATE ─── -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card" id="loginCard">
+      <div class="lock-wrap">
+        <svg class="lock-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path class="shackle" d="M34 44 V30 a16 16 0 0 1 32 0 V44"/>
+          <g class="lock-heart">
+            <path d="M50 95 C50 95 8 66 8 42 C8 30 17 22 28 22 C37 22 45 27 50 35 C55 27 63 22 72 22 C83 22 92 30 92 42 C92 66 50 95 50 95Z" fill="url(#heroHeartGrad)"/>
+            <circle cx="50" cy="52" r="6" fill="#2a0016"/>
+            <path d="M47 55 L45 70 H55 L53 55Z" fill="#2a0016"/>
+          </g>
+        </svg>
+      </div>
+      <h2 class="login-title">Sirf Mere Liye</h2>
+      <p class="login-sub">✦ Unlock My Heart ✦</p>
+
+      <form id="loginForm" autocomplete="off">
+        <div class="field">
+          <input type="text" id="loginUser" placeholder=" " autocomplete="off" spellcheck="false" />
+          <label for="loginUser">Your Jan</label>
+        </div>
+        <div class="field">
+          <input type="password" id="loginPass" placeholder=" " autocomplete="off" />
+          <label for="loginPass">Begum Jan</label>
+        </div>
+        <div class="hint-row">
+          <button type="button" class="hint-toggle" id="hintToggle" aria-expanded="false" aria-controls="hintPanel">💡 Hint chahiye?</button>
+        </div>
+        <div class="hint-panel" id="hintPanel">
+          <p class="hint-q">What is Abdullah's best dish?</p>
+          <div class="hint-choices">
+            <button type="button" class="hint-choice" data-dish="karahi">🍲 Karahi</button>
+            <button type="button" class="hint-choice" data-dish="biryani">🍛 Biryani</button>
+          </div>
+          <div class="hint-result" id="hintResult" aria-live="polite"></div>
+        </div>
+        <button type="submit" class="login-btn">Unlock 💖</button>
+        <div class="login-error" id="loginError"></div>
+      </form>
+    </div>
+  </div>
 
   <!-- ─── ENVELOPE OPENING OVERLAY (CLICK TO REVEAL) ─── -->
   <div class="envelope-overlay" id="envelopeOverlay">
@@ -766,8 +1068,11 @@
     </div>
 
     <!-- 4 SWEET REASONS WHY I LOVE YOU -->
-    <div>
+    <div class="locked-teaser" id="lockedTeaser">🔒 Pehle "Yes" bolo... phir mere dil ke raaz khulenge</div>
+
+    <div class="gated" id="reasonsSection">
       <div class="reasons-title">Why You Mean The World To Me</div>
+      <p class="secret-count" id="secretCount">Har card par tap karo — chhupa raaz milega (0/4)</p>
       <div class="reasons-grid">
         <div class="reason-card" onclick="celebrateClick(event)">
           <div class="reason-icon">✨</div>
@@ -791,6 +1096,18 @@
           <div class="reason-icon">♾️</div>
           <div class="reason-head">Forever & Always</div>
           <p class="reason-desc">Because loving you is not a choice, it is the most beautiful habit of my soul.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINAL SECRET: SCRATCH CARD (unlocks after all 4 secrets) -->
+    <div class="gated" id="vaultSection">
+      <div class="vault-card">
+        <div class="vault-title">The Final Secret</div>
+        <p class="vault-sub">Chaaron raaz mil gaye! Ab is card ko ragdo ✨</p>
+        <div class="scratch-box">
+          <div class="scratch-msg">Abdullah ❤️ Naba<small>Tum meri har dua ka jawab ho 💍</small></div>
+          <canvas id="scratchCanvas"></canvas>
         </div>
       </div>
     </div>
@@ -879,8 +1196,81 @@
   <!-- Audio Element -->
   <audio id="htmlAudio"></audio>
 
+  <!-- If the confetti CDN fails (offline), keep everything else working -->
+  <script>window.confetti = window.confetti || function () {};</script>
+
   <!-- JAVASCRIPT LOGIC -->
   <script>
+    // ──────────────────────────────────────────
+    // 0. LOGIN GATE (hardcoded credentials)
+    // ──────────────────────────────────────────
+    const LOGIN_USER = 'abdullah wazir';
+    const LOGIN_PASS = 'abdullahki begumjan';
+    const normalize = s => s.toLowerCase().replace(/\s+/g, '');
+
+    const loginForm = document.getElementById('loginForm');
+    const loginCard = document.getElementById('loginCard');
+    const loginError = document.getElementById('loginError');
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = normalize(document.getElementById('loginUser').value);
+      const p = normalize(document.getElementById('loginPass').value);
+
+      if (u === normalize(LOGIN_USER) && p === normalize(LOGIN_PASS)) {
+        loginError.textContent = '';
+        loginCard.classList.add('unlocked');
+        confetti({ particleCount: 90, spread: 80, origin: { y: 0.55 }, colors: ['#ff2a6d', '#ffd166', '#ff758c', '#ffffff'] });
+        setTimeout(() => document.getElementById('loginOverlay').classList.add('gone'), 500);
+      } else {
+        loginError.textContent = 'Ye dil sirf Abdullah ki Begum Jan ke liye khulta hai 💔';
+        loginCard.classList.remove('shake');
+        void loginCard.offsetWidth;
+        loginCard.classList.add('shake');
+      }
+    });
+
+    // Hint: best dish → Karahi reveals the login, Biryani gets a love note
+    const hintToggle = document.getElementById('hintToggle');
+    const hintPanel = document.getElementById('hintPanel');
+    const hintResult = document.getElementById('hintResult');
+
+    hintToggle.addEventListener('click', () => {
+      const open = hintPanel.classList.toggle('open');
+      hintToggle.setAttribute('aria-expanded', open);
+    });
+
+    document.querySelectorAll('.hint-choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        hintResult.textContent = '';
+        if (btn.dataset.dish === 'karahi') {
+          const box = document.createElement('div');
+          box.className = 'cred-box';
+          box.innerHTML = 'Sahi jawab! 🍲<br>Your Jan: <b></b><br>Begum Jan: <b></b><br>';
+          const [bu, bp] = box.querySelectorAll('b');
+          bu.textContent = LOGIN_USER;
+          bp.textContent = LOGIN_PASS;
+          const fill = document.createElement('button');
+          fill.type = 'button';
+          fill.className = 'cred-fill';
+          fill.textContent = 'Auto-fill ✨';
+          fill.addEventListener('click', () => {
+            document.getElementById('loginUser').value = LOGIN_USER;
+            document.getElementById('loginPass').value = LOGIN_PASS;
+            document.getElementById('loginPass').focus();
+          });
+          box.appendChild(fill);
+          hintResult.appendChild(box);
+        } else {
+          const msg = document.createElement('div');
+          msg.className = 'love-msg';
+          msg.innerHTML = 'I love you meri jan 💖<small>Par chaabi Karahi mein hai 😉</small>';
+          hintResult.appendChild(msg);
+          confetti({ particleCount: 60, spread: 70, origin: { y: 0.7 }, colors: ['#ff2a6d', '#ff758c', '#ffffff'] });
+        }
+      });
+    });
+
     // ──────────────────────────────────────────
     // 1. TYPEWRITER EFFECT
     // ──────────────────────────────────────────
@@ -890,7 +1280,7 @@
       const target = document.getElementById('typewriterText');
       target.textContent = "";
       let index = 0;
-      const speed = 32;
+      const speed = 12;
 
       function type() {
         if (index < letterText.length) {
@@ -930,8 +1320,8 @@
           colors: ['#ff2a6d', '#ffd166', '#ff758c', '#ffffff']
         });
         envelopeOverlay.classList.add('opened');
-        setTimeout(startTypewriter, 700);
-      }, 650);
+        setTimeout(startTypewriter, 300);
+      }, 400);
 
       // Start music automatically when user interacts
       if (!isPlaying) togglePlay();
@@ -1017,15 +1407,23 @@
         }
       });
 
-      requestAnimationFrame(renderCanvas);
+      canvasRunning = !document.hidden;
+      if (canvasRunning) requestAnimationFrame(renderCanvas);
     }
+    let canvasRunning = true;
     renderCanvas();
+    // Pause the background when the tab is hidden, resume when visible
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && !canvasRunning) renderCanvas(); });
 
     // ──────────────────────────────────────────
     // 4. SPARKLE CURSOR TRAIL
     // ──────────────────────────────────────────
+    let lastSparkle = 0;
     document.addEventListener('mousemove', (e) => {
-      if (Math.random() > 0.6) {
+      const now = performance.now();
+      if (now - lastSparkle < 40) return; // throttle DOM churn
+      lastSparkle = now;
+      if (Math.random() > 0.5) {
         const dot = document.createElement('div');
         dot.className = 'sparkle-dot';
         dot.style.left = (e.clientX - 6) + 'px';
@@ -1046,19 +1444,119 @@
     const yesResponse = document.getElementById('yesResponse');
 
     // Runaway "No" button
+    // "No" gets smaller and more desperate each time; after 7 tries it gives up and says Yes
+    const noLines = ['Pakka? 🥺', 'Ek baar aur soch lo...', 'Dil toot jayega 💔', 'Main ro dunga 😭', 'Please na 🥹', 'Aakhri mauka!'];
+    let noCount = 0;
+    let noGaveUp = false;
+
     function dodgeNo(e) {
-      if (e) e.preventDefault();
-      const maxX = Math.min(120, window.innerWidth / 4);
-      const maxY = 60;
+      if (noGaveUp) return;
+      if (e && e.cancelable) e.preventDefault();
+      noCount++;
+
+      if (noCount >= 7) {
+        noGaveUp = true;
+        btnNo.textContent = 'Chalo Yes 💖';
+        btnNo.style.transform = 'none';
+        btnNo.style.background = 'linear-gradient(135deg, #ff2a6d, #ff758c)';
+        btnNo.style.color = '#fff';
+        btnNo.style.border = 'none';
+        return;
+      }
+
+      const maxX = Math.min(140, window.innerWidth / 3);
       const randX = (Math.random() - 0.5) * maxX * 2;
-      const randY = (Math.random() - 0.5) * maxY * 2;
-      btnNo.style.transform = `translate(${randX}px, ${randY}px)`;
+      const randY = (Math.random() - 0.5) * 120;
+      const scale = Math.max(0.55, 1 - noCount * 0.07);
+      btnNo.style.transform = `translate(${randX}px, ${randY}px) scale(${scale})`;
+      btnNo.textContent = noLines[noCount - 1];
+      btnYes.style.transform = `scale(${Math.min(1.5, 1 + noCount * 0.08)})`;
     }
     btnNo.addEventListener('mouseenter', dodgeNo);
     btnNo.addEventListener('touchstart', dodgeNo, { passive: false });
-    btnNo.addEventListener('click', dodgeNo);
+    btnNo.addEventListener('click', () => { if (noGaveUp) btnYes.click(); else dodgeNo(); });
+
+    // ── Secrets: unlocked by "Yes", revealed card by card ──
+    const secrets = [
+      'Jab tum haste ho, mera poora din ban jata hai.',
+      'Tumhari ek "hmm" bhi mere liye kisi dua se kam nahi.',
+      'Tum paas ho to khamoshi bhi sukoon deti hai.',
+      'Agli zindagi mein bhi main tumhein hi chunoonga.'
+    ];
+    const secretCount = document.getElementById('secretCount');
+    const reasonCards = document.querySelectorAll('.reason-card');
+    let secretsFound = 0;
+
+    reasonCards.forEach((card, i) => {
+      card.addEventListener('click', () => {
+        if (card.classList.contains('revealed')) return;
+        card.classList.add('revealed');
+        const desc = card.querySelector('.reason-desc');
+        desc.textContent = secrets[i];
+        desc.classList.add('swap');
+        secretsFound++;
+        secretCount.textContent = secretsFound === 4
+          ? 'Sab raaz mil gaye! 🔓 (4/4)'
+          : `Har card par tap karo — chhupa raaz milega (${secretsFound}/4)`;
+        if (secretsFound === 4) unlockVault();
+      });
+    });
+
+    let scratchReady = false;
+    function unlockVault() {
+      const vault = document.getElementById('vaultSection');
+      setTimeout(() => {
+        vault.classList.add('show');
+        initScratch();
+        vault.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 700);
+    }
+
+    function initScratch() {
+      if (scratchReady) return;
+      scratchReady = true;
+      const sc = document.getElementById('scratchCanvas');
+      const sctx = sc.getContext('2d', { willReadFrequently: true });
+      const w = sc.width = sc.offsetWidth;
+      const h = sc.height = sc.offsetHeight;
+
+      const g = sctx.createLinearGradient(0, 0, w, h);
+      g.addColorStop(0, '#d4a537'); g.addColorStop(0.5, '#ffe9a0'); g.addColorStop(1, '#c08a1d');
+      sctx.fillStyle = g;
+      sctx.fillRect(0, 0, w, h);
+      sctx.fillStyle = 'rgba(90, 50, 0, 0.75)';
+      sctx.font = '600 20px Outfit, sans-serif';
+      sctx.textAlign = 'center';
+      sctx.fillText('✨ Yahan ragdo ✨', w / 2, h / 2 + 7);
+
+      let drawing = false, moves = 0, finished = false;
+      const scratch = (e) => {
+        const r = sc.getBoundingClientRect();
+        sctx.globalCompositeOperation = 'destination-out';
+        sctx.beginPath();
+        sctx.arc(e.clientX - r.left, e.clientY - r.top, 22, 0, Math.PI * 2);
+        sctx.fill();
+      };
+      const check = () => {
+        if (finished) return;
+        const data = sctx.getImageData(0, 0, w, h).data;
+        let clear = 0, total = 0;
+        for (let i = 3; i < data.length; i += 64) { total++; if (data[i] === 0) clear++; }
+        if (clear / total > 0.45) {
+          finished = true;
+          sc.classList.add('done');
+          confetti({ particleCount: 160, spread: 100, origin: { y: 0.6 }, colors: ['#ff2a6d', '#ffd166', '#ff758c', '#ffffff'] });
+        }
+      };
+      sc.addEventListener('pointerdown', (e) => { drawing = true; sc.setPointerCapture(e.pointerId); scratch(e); });
+      sc.addEventListener('pointermove', (e) => { if (!drawing) return; scratch(e); if (++moves % 12 === 0) check(); });
+      sc.addEventListener('pointerup', () => { drawing = false; check(); });
+      sc.addEventListener('pointercancel', () => { drawing = false; });
+    }
 
     btnYes.addEventListener('click', () => {
+      document.getElementById('lockedTeaser').style.display = 'none';
+      document.getElementById('reasonsSection').classList.add('show');
       yesResponse.style.display = 'block';
       confetti({
         particleCount: 200,
@@ -1082,8 +1580,28 @@
 
     // Heart explosion click
     const heartInteractive = document.getElementById('heartInteractive');
+    let heartTaps = 0;
     heartInteractive.addEventListener('click', (e) => {
       celebrateClick(e);
+      if (++heartTaps === 7) {
+        // Easter egg: tap the big heart 7 times
+        for (let i = 0; i < 24; i++) {
+          const h = document.createElement('div');
+          h.className = 'rain-heart';
+          h.textContent = ['💖', '💗', '💕', '🌹'][i % 4];
+          h.style.left = Math.random() * 100 + 'vw';
+          h.style.fontSize = 18 + Math.random() * 22 + 'px';
+          h.style.animationDuration = 2.5 + Math.random() * 2.5 + 's';
+          h.style.animationDelay = Math.random() * 1.2 + 's';
+          document.body.appendChild(h);
+          setTimeout(() => h.remove(), 7000);
+        }
+        const t = document.createElement('div');
+        t.className = 'toast';
+        t.textContent = 'Tumne meri dhadkan dhoondh li 💓 Secret #1: main tumse kabhi bore nahi hota';
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 5000);
+      }
     });
 
     // ──────────────────────────────────────────
